@@ -54,7 +54,7 @@ resource "null_resource" "component" {
     # Bootstrap script called with private_ip of each node in the cluster
     inline = [
       "chmod +x /tmp/bootstrap.sh",
-      "sudo sh /tmp/bootstrap.sh ${var.tags.Component} ${var.environment}"
+      "sudo sh /tmp/bootstrap.sh ${var.tags.Component} ${var.environment} ${var.app_version}"
     ]
   }
 }
@@ -79,7 +79,7 @@ resource "null_resource" "component_delete" {
 
   provisioner "local-exec" {
     # Bootstrap script called with private_ip of each node in the cluster
-    command = "aws ec2 terminate-instances --instance-ids ${module.component.id}"
+    command = "aws ec2 terminate-instances --region=us-east-1 --instance-ids ${module.component.id}"
   }
 
   depends_on = [ aws_ami_from_instance.component]
